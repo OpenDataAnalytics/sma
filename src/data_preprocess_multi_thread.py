@@ -94,15 +94,19 @@ class Task(object):
         return '%s' % (self.item)
 
 if __name__ == '__main__':
-
-    in_file = 'tweets_with_phrase_2.txt'
-    out_file = "tweets_with_phrase_test.txt"
+    
+    #FollowersTweets_CDCasthma.txt, FollowersTweets_ACAAI.txt and FollowersTweets_AAFANational.txt
+    # CDCasthma  ACAAI  AAFANational
+    data_name="AAFANational"
+    in_file = '/home/apdm02/data/Data/FollowersTweets_'+data_name+'.txt'
+    out_file = '/home/apdm02/workspace/NIH/data/tweets_with_phrase_'+data_name+'.txt'
 
     # Establish communication queues
     tasks = multiprocessing.Queue()
+    
     results = multiprocessing.Queue()
     # Start consumers
-    num_consumers = 6 # We only use 5 cores.
+    num_consumers = 8 # We only use 5 cores.
     print 'Creating %d consumers' % num_consumers
     consumers = [ Consumer(tasks, results)
                   for i in xrange(num_consumers) ]
@@ -111,6 +115,7 @@ if __name__ == '__main__':
     
     lines = open(in_file).readlines()
     num_jobs = len(lines)
+    total_tweet=num_jobs
     # Enqueue jobs
     for line in lines:
         tasks.put(Task(line))
@@ -135,18 +140,6 @@ if __name__ == '__main__':
     for line in relevance_lines:
         with open(out_file, 'a') as f:
             f.write(line)
-            f.write('\n')
+            #f.write('\n')
             count += 1
-    print("number of tweets with phrase in this file" + in_file + ": ", count)
-
-
-
-
-
-
-
-
-
-
-
-
+    print("number of tweets with phrase in this file" + in_file + ": ", count,"/",total_tweet)
